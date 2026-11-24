@@ -1,0 +1,48 @@
+xrun: 25.03-s001: (c) Copyright 1995-2025 Cadence Design Systems, Inc.
+TOOL:	xrun	25.03-s001: Started on Nov 20, 2026 at 13:17:39 EST
+xrun
+	-Q
+	-unbuffered
+	-timescale 1ns/1ns
+	-sysv
+	-access +rw
+	design.sv
+	testbench.sv
+	Top level design units:
+		tb_aes128_enc
+Loading snapshot worklib.tb_aes128_enc:sv .................... Done
+xcelium> source /xcelium25.03/tools/xcelium/files/xmsimrc
+xcelium> run
+tb_aes128_enc: AES-128 encryption block, 5 tests, clock 100.0 MHz
+
+---- TEST 1: FIPS-197 C.1 known answer, key supplied ----
+[              185000] PASS  T1 FIPS-197 C.1: data_out=0000000000000000000000000000000069c4e0d86a7b0430d8cdb78070b4c55a dk=0 latency=11
+DONE test 1
+
+---- TEST 2: no key supplied -> default key ----
+[              325000] PASS  T2a default key, FIPS-197 B: data_out=000000000000000000000000000000003925841d02dc09fbdc118597196a0b32 dk=1 latency=11
+[              445000] PASS  T2b default key, key_in ignored: data_out=000000000000000000000000000000008df4e9aac5c7573a27d8d055d6e4d64b dk=1 latency=11
+DONE test 2
+
+---- TEST 3: back-to-back SP 800-38A ECB-AES128, key_valid 1/0/1/0 ----
+[              585000] PASS  T3a SP800-38A blk1 key: data_out=000000000000000000000000000000003ad77bb40d7a3660a89ecaf32466ef97 dk=0 latency=11
+[              705000] PASS  T3b SP800-38A blk2 default: data_out=00000000000000000000000000000000f5d3d58503b9699de785895a96fdbaaf dk=1 latency=11
+[              825000] PASS  T3c SP800-38A blk3 key: data_out=0000000000000000000000000000000043b1cd7f598ece23881b00e3ed030688 dk=0 latency=11
+[              945000] PASS  T3d SP800-38A blk4 default: data_out=000000000000000000000000000000007b0c785e27e8ad3f8223207104725dd4 dk=1 latency=11
+DONE test 3
+
+---- TEST 4: output back-pressure, second request waits ----
+[             1285000] PASS  T4a result held 20 cycles: data_out=00000000000000000000000000000000bcbf217cb280cf30b2517052193ab979 dk=0 latency=11
+[             1405000] PASS  T4b request that had to wait: data_out=000000000000000000000000000000000ef79f623610e0d8a46cfc4b1aa5f98c dk=0 latency=11
+DONE test 4
+
+---- TEST 5: reset during an encryption, then recovery ----
+[             1480000] T5: rst_n asserted in round 5
+[             1795000] PASS  T5b after reset, zero key/data: data_out=0000000000000000000000000000000066e94bd4ef8a2c3b884cfa59ca342b2e dk=0 latency=11
+DONE test 5
+
+TEST PASSED (99 checks, 11 requests, 10 results)
+Simulation complete via $finish(1) at time 1810 NS + 0
+./testbench.sv:390     $finish;
+xcelium> exit
+TOOL:	xrun	25.03-s001: Exiting on Nov 20, 2026 at 13:17:41 EST  (total: 00:00:02)
